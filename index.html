@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>SIDAMIU LOGIN</title>
+
+<style>
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#021126;
+font-family:Segoe UI,sans-serif;
+}
+
+.login-box{
+width:400px;
+background:#042247;
+padding:30px;
+border-radius:15px;
+border:1px solid #00cfff;
+color:white;
+}
+
+h1{
+text-align:center;
+margin-bottom:25px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:12px;
+border:none;
+border-radius:8px;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#00cfff;
+border:none;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+}
+
+#hasil{
+margin-top:15px;
+text-align:center;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h1>SIDAMIU</h1>
+
+<input
+type="email"
+id="email"
+placeholder="Email">
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<button id="loginBtn">
+LOGIN
+</button>
+
+<div id="hasil"></div>
+
+</div>
+
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+doc,
+getDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+document
+.getElementById("loginBtn")
+.onclick = async()=>{
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+const userDoc =
+await getDoc(
+doc(db,"user",email)
+);
+
+if(!userDoc.exists()){
+
+document.getElementById("hasil").innerHTML =
+"Role user tidak ditemukan";
+
+return;
+
+}
+
+const role =
+userDoc.data().role;
+
+if(role === "admin"){
+
+window.location.href =
+"admin.html";
+
+}
+else if(role === "depot"){
+
+window.location.href =
+"depot.html";
+
+}
+else{
+
+document.getElementById("hasil").innerHTML =
+"Role tidak valid";
+
+}
+
+}
+catch(err){
+
+document.getElementById("hasil").innerHTML =
+"Login gagal";
+
+console.log(err);
+
+}
+
+};
+
+</script>
+
+</body>
+</html>

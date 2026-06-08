@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>SIDAMIU ADMIN</title>
+
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,sans-serif;
+}
+
+body{
+background:#021126;
+color:white;
+display:flex;
+}
+
+.sidebar{
+width:230px;
+height:100vh;
+background:#042247;
+padding:20px;
+position:fixed;
+left:0;
+top:0;
+overflow:auto;
+}
+
+.sidebar h2{
+text-align:center;
+margin-bottom:20px;
+}
+
+.sidebar button{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+background:#00cfff;
+border:none;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.main{
+margin-left:230px;
+width:100%;
+padding:20px;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+.card{
+background:#042247;
+border:1px solid #00cfff;
+border-radius:12px;
+padding:20px;
+margin-bottom:15px;
+}
+
+.grid4{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+}
+
+input,
+select,
+textarea{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+margin-top:10px;
+margin-bottom:10px;
+}
+
+.btn{
+background:#00cfff;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+table th,
+table td{
+border:1px solid #00cfff;
+padding:10px;
+}
+
+#map{
+height:500px;
+border-radius:10px;
+}
+
+.success{
+color:#00ff88;
+font-weight:bold;
+margin-top:10px;
+}
+
+@media(max-width:900px){
+
+.grid4{
+grid-template-columns:1fr;
+}
+
+.sidebar{
+width:100%;
+height:auto;
+position:relative;
+}
+
+.main{
+margin-left:0;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>SIDAMIU</h2>
+
+<button onclick="showPage('dashboard')">
+📊 Dashboard
+</button>
+
+<button onclick="showPage('depot')">
+🏢 Kelola Depot
+</button>
+
+<button onclick="showPage('input')">
+📝 Input Hasil
+</button>
+
+<button onclick="showPage('histori')">
+📋 Histori
+</button>
+
+<button onclick="showPage('kie')">
+📚 Media KIE
+</button>
+
+<button onclick="showPage('akun')">
+👤 Akun Depot
+</button>
+
+<button onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="page active">
+
+<div class="card">
+<h2>Dashboard SIDAMIU</h2>
+</div>
+
+<div class="grid4">
+
+<div class="card">
+<h2 id="totalDepot">0</h2>
+<p>Total Depot</p>
+</div>
+
+<div class="card">
+<h2 id="ms">0</h2>
+<p>Memenuhi Syarat</p>
+</div>
+
+<div class="card">
+<h2 id="tms">0</h2>
+<p>Tidak Memenuhi Syarat</p>
+</div>
+
+<div class="card">
+<h2 id="rata">0</h2>
+<p>Rata-rata Skor</p>
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Peta Sebaran Depot</h2>
+
+<br>
+
+<div id="map"></div>
+
+</div>
+
+</div>
+<!-- KELOLA DEPOT -->
+
+<div id="depot" class="page">
+
+<div class="card">
+
+<h2>Tambah Depot</h2>
+
+<button
+class="btn"
+onclick="generateEmailDepot()">
+🔄 Generate Email Semua Depot
+</button>
+
+<br><br>
+
+<input
+id="namaDepot"
+placeholder="Nama Depot">
+
+<input
+id="pemilikDepot"
+placeholder="Nama Pemilik">
+
+<input
+id="alamatDepot"
+placeholder="Alamat Depot">
+
+<button
+id="gpsBtn"
+class="btn"
+type="button">
+
+📍 Ambil Lokasi GPS
+
+</button>
+
+<input
+id="latitudeDepot"
+placeholder="Latitude"
+readonly>
+
+<input
+id="longitudeDepot"
+placeholder="Longitude"
+readonly>
+
+<button
+id="simpanDepot"
+class="btn">
+
+SIMPAN DEPOT
+
+</button>
+
+<div id="hasilDepot"></div>
+
+</div>
+
+</div>
+
+<!-- INPUT HASIL -->
+
+<div id="input" class="page">
+
+<div class="card">
+
+<h2>Input Hasil Pemeriksaan</h2>
+
+<select id="pilihDepot">
+
+<option value="">
+Pilih Depot
+</option>
+
+</select>
+
+<input
+id="skorInspeksi"
+type="number"
+placeholder="Skor Pemeriksaan">
+
+<select id="statusInspeksi">
+
+<option value="Memenuhi Syarat">
+Memenuhi Syarat
+</option>
+
+<option value="Tidak Memenuhi Syarat">
+Tidak Memenuhi Syarat
+</option>
+
+</select>
+
+<input
+id="tanggalInspeksi"
+type="date">
+
+<button
+id="simpanHasil"
+class="btn">
+
+SIMPAN HASIL PEMERIKSAAN
+
+</button>
+
+<div id="hasilInspeksi"></div>
+
+</div>
+
+</div>
+
+<!-- HISTORI -->
+
+<div id="histori" class="page">
+
+<div class="card">
+
+<h2>Histori Pemeriksaan</h2>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Depot</th>
+<th>Skor</th>
+<th>Status</th>
+<th>Tanggal</th>
+
+</tr>
+
+</thead>
+
+<tbody id="historiTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- AKUN DEPOT -->
+
+<div id="akun" class="page">
+
+<div class="card">
+
+<h2>Daftar Akun Depot</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Depot</th>
+<th>Email Login</th>
+<th>Password Awal</th>
+</tr>
+</thead>
+
+<tbody id="akunTable">
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- MEDIA KIE -->
+
+<div id="kie" class="page">
+
+<div class="card">
+
+<h2>Media KIE</h2>
+
+<input
+type="file"
+id="fileKIE">
+
+<button
+class="btn">
+
+UPLOAD FILE
+
+</button>
+
+<br><br>
+
+<p>
+PDF, Gambar dan Video Edukasi
+</p>
+
+</div>
+
+</div>
+
+</div>
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+collection,
+getDocs,
+doc,
+setDoc,
+updateDoc,
+addDoc,
+writeBatch
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+signOut,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+window.showPage=function(page){
+
+document
+.querySelectorAll(".page")
+.forEach(x=>x.classList.remove("active"));
+
+document
+.getElementById(page)
+.classList.add("active");
+
+}
+
+window.logout = async()=>{
+
+try{
+
+await signOut(auth);
+
+localStorage.clear();
+
+window.location.href =
+"index.html";
+
+}
+catch(error){
+
+console.log(error);
+
+alert("Logout gagal");
+
+}
+
+}
+
+async function loadDashboard(){
+
+let total=0;
+let ms=0;
+let tms=0;
+let totalSkor=0;
+
+const snapshot=
+await getDocs(
+collection(db,"depots")
+);
+
+snapshot.forEach(docu=>{
+
+const d=docu.data();
+
+total++;
+
+totalSkor+=
+Number(d.skor||0);
+
+if(
+(d.status||"")
+.includes("Memenuhi")
+){
+ms++;
+}else{
+tms++;
+}
+
+});
+
+document.getElementById("totalDepot").innerHTML=total;
+document.getElementById("ms").innerHTML=ms;
+document.getElementById("tms").innerHTML=tms;
+
+document.getElementById("rata").innerHTML=
+total>0
+?
+(totalSkor/total).toFixed(1)
+:
+0;
+
+}
+
+async function loadDepotSelect(){
+
+const select=
+document.getElementById("pilihDepot");
+
+select.innerHTML=
+"<option value=''>Pilih Depot</option>";
+
+const snapshot=
+await getDocs(
+collection(db,"depots")
+);
+
+snapshot.forEach(docu=>{
+
+const d=docu.data();
+
+select.innerHTML += `
+<option value="${docu.id}">
+${d.nama}
+</option>
+`;
+
+});
+
+}
+
+async function loadHistori(){
+    async function loadAkunDepot(){
+
+const tbody =
+document.getElementById("akunTable");
+
+if(!tbody) return;
+
+tbody.innerHTML = "";
+
+const snapshot =
+await getDocs(
+collection(db,"depots")
+);
+
+snapshot.forEach(docu=>{
+
+const d = docu.data();
+
+tbody.innerHTML += `
+<tr>
+<td>${d.nama}</td>
+<td>${d.email || "-"}</td>
+<td>12345678</td>
+</tr>
+`;
+
+});
+
+}
+
+const tbody=
+document.getElementById("historiTable");
+
+tbody.innerHTML="";
+
+const snapshot=
+await getDocs(
+collection(db,"inspections")
+);
+
+snapshot.forEach(docu=>{
+
+const d=docu.data();
+
+tbody.innerHTML += `
+<tr>
+<td>${d.depotId || ""}</td>
+<td>${d.skorAkhir || 0}</td>
+<td>${d.status || ""}</td>
+<td>${d.tanggalPenilaian || "-"}</td>
+</tr>
+`;
+
+});
+
+}
+
+async function loadMap(){
+
+const snapshot=
+await getDocs(
+collection(db,"depots")
+);
+
+const map =
+L.map("map").setView(
+[-6.2088,106.8456],
+10
+);
+
+L.tileLayer(
+"https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+maxZoom:19,
+attribution:"© OpenStreetMap"
+}
+).addTo(map);
+
+snapshot.forEach(docu=>{
+
+const d = docu.data();
+
+if(
+d.latitude &&
+d.longitude
+){
+
+L.marker([
+Number(d.latitude),
+Number(d.longitude)
+])
+.addTo(map)
+.bindPopup(`
+<b>${d.nama}</b>
+<br>
+${d.status}
+<br>
+Skor : ${d.skor}
+`);
+
+}
+
+});
+
+}
+
+document
+.getElementById("gpsBtn")
+.onclick=()=>{
+
+if(!navigator.geolocation){
+
+alert("GPS tidak didukung");
+return;
+
+}
+
+navigator.geolocation.getCurrentPosition(
+
+(pos)=>{
+
+document.getElementById("latitudeDepot").value=
+pos.coords.latitude;
+
+document.getElementById("longitudeDepot").value=
+pos.coords.longitude;
+
+},
+
+()=>{
+
+alert("Gagal mengambil GPS");
+
+}
+
+);
+
+};
+
+document
+.getElementById("simpanDepot")
+.onclick=async()=>{
+
+const nama=
+document.getElementById("namaDepot").value;
+
+const pemilik=
+document.getElementById("pemilikDepot").value;
+
+const alamat=
+document.getElementById("alamatDepot").value;
+
+const latitude=
+document.getElementById("latitudeDepot").value;
+
+const longitude=
+document.getElementById("longitudeDepot").value;
+
+if(!nama){
+
+alert("Nama depot wajib diisi");
+return;
+
+}
+
+await setDoc(
+
+doc(
+db,
+"depots",
+nama.replaceAll(" ","").toUpperCase()
+),
+
+{
+nama:nama,
+pemilik:pemilik,
+alamat:alamat,
+latitude:Number(latitude),
+longitude:Number(longitude),
+status:"Belum Dinilai",
+skor:0,
+role:"depot"
+}
+
+);
+
+document.getElementById("hasilDepot").innerHTML=
+"<div class='success'>✅ Depot berhasil ditambahkan</div>";
+
+loadDashboard();
+loadDepotSelect();
+
+};
+
+document
+.getElementById("simpanHasil")
+.onclick=async()=>{
+
+const depotId=
+document.getElementById("pilihDepot").value;
+
+const skor=
+Number(
+document.getElementById("skorInspeksi").value
+);
+
+const status=
+document.getElementById("statusInspeksi").value;
+
+const tanggal=
+document.getElementById("tanggalInspeksi").value;
+
+if(!depotId){
+
+alert("Pilih depot dahulu");
+return;
+
+}
+
+if(!tanggal){
+
+alert("Tanggal wajib diisi");
+return;
+
+}
+
+await updateDoc(
+doc(db,"depots",depotId),
+{
+skor:skor,
+status:status
+}
+);
+
+await addDoc(
+collection(db,"inspections"),
+{
+depotId:depotId,
+skorAkhir:skor,
+status:status,
+tanggalPenilaian:tanggal,
+timestamp:new Date()
+}
+);
+
+document.getElementById("hasilInspeksi").innerHTML=
+"<div class='success'>✅ Hasil pemeriksaan berhasil disimpan</div>";
+
+loadDashboard();
+loadHistori();
+
+};
+onAuthStateChanged(auth,(user)=>{
+
+if(!user){
+
+window.location.href =
+"index.html";
+
+}
+
+});
+window.generateEmailDepot = async()=>{
+
+const snapshot =
+await getDocs(
+collection(db,"depots")
+);
+
+const batch = writeBatch(db);
+
+snapshot.forEach((docu)=>{
+
+const nama = docu.id.toLowerCase();
+
+batch.update(
+doc(db,"depots",docu.id),
+{
+email: `${nama}@sidamiu.id`
+}
+);
+
+});
+
+await batch.commit();
+
+alert("Email seluruh depot berhasil dibuat");
+
+};
+
+loadDashboard();
+loadDepotSelect();
+loadHistori();
+loadMap();
+loadAkunDepot();
+
+</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+</body>
+</html>

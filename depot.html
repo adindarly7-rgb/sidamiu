@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>SIDAMIU DEPOT</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI,sans-serif;
+background:#021126;
+color:white;
+display:flex;
+}
+
+.sidebar{
+width:220px;
+height:100vh;
+background:#042247;
+padding:15px;
+position:fixed;
+}
+
+.sidebar h2{
+text-align:center;
+}
+
+.sidebar button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:8px;
+background:#00cfff;
+font-weight:bold;
+cursor:pointer;
+}
+
+.main{
+margin-left:240px;
+padding:20px;
+width:100%;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+.card{
+background:#042247;
+padding:20px;
+border-radius:12px;
+border:1px solid #00cfff;
+margin-bottom:15px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+table th,
+table td{
+border:1px solid #00cfff;
+padding:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>DEPOT</h2>
+
+<button onclick="showPage('profil')">
+🏢 Profil Depot
+</button>
+
+<button onclick="showPage('histori')">
+📋 Histori
+</button>
+
+<button onclick="showPage('kie')">
+📚 Media KIE
+</button>
+
+<button onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+<div class="main">
+
+<div id="profil" class="page active">
+
+<div class="card">
+
+<h2>Profil Depot</h2>
+
+<p><b>Nama :</b> <span id="namaDepot"></span></p>
+<p><b>Alamat :</b> <span id="alamatDepot"></span></p>
+<p><b>Status :</b> <span id="statusDepot"></span></p>
+<p><b>Skor :</b> <span id="skorDepot"></span></p>
+
+</div>
+
+</div>
+
+<div id="histori" class="page">
+
+<div class="card">
+
+<h2>Histori Pemeriksaan</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Skor</th>
+<th>Status</th>
+<th>Tanggal</th>
+</tr>
+</thead>
+
+<tbody id="historiDepot">
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div id="kie" class="page">
+
+<div class="card">
+
+<h2>Media KIE</h2>
+
+<p>
+Media edukasi akan tampil di sini
+</p>
+
+</div>
+
+</div>
+
+</div>
+<script type="module">
+
+import { auth } from "./firebase-config.js";
+import { db } from "./firebase-config.js";
+
+import {
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+window.showPage=function(page){
+
+document
+.querySelectorAll(".page")
+.forEach(x=>x.classList.remove("active"));
+
+document
+.getElementById(page)
+.classList.add("active");
+
+}
+
+window.logout=async()=>{
+
+await signOut(auth);
+
+localStorage.clear();
+
+window.location.href="index.html";
+
+}
+
+let emailLogin="";
+
+async function loadProfil(){
+
+const snapshot =
+await getDocs(
+collection(db,"depots")
+);
+
+snapshot.forEach(docu=>{
+
+const d = docu.data();
+
+if(d.email===emailLogin){
+
+document.getElementById("namaDepot").innerHTML =
+d.nama || "-";
+
+document.getElementById("alamatDepot").innerHTML =
+d.alamat || "-";
+
+document.getElementById("statusDepot").innerHTML =
+d.status || "-";
+
+document.getElementById("skorDepot").innerHTML =
+d.skor || 0;
+
+}
+
+});
+
+}
+
+onAuthStateChanged(auth,async(user)=>{
+
+if(!user){
+
+window.location.href="index.html";
+return;
+
+}
+
+emailLogin=user.email;
+
+loadProfil();
+
+async function loadHistori(){
+
+const tbody =
+document.getElementById("historiTable");
+
+tbody.innerHTML="";
+
+const emailLogin =
+localStorage.getItem("email");
+
+const depotSnapshot =
+await getDocs(
+collection(db,"depots")
+);
+
+let depotSaya = null;
+
+depotSnapshot.forEach(docu=>{
+
+const d = docu.data();
+
+if(d.email === emailLogin){
+depotSaya = docu.id;
+}
+
+});
+
+if(!depotSaya) return;
+
+const inspeksiSnapshot =
+await getDocs(
+collection(db,"inspections")
+);
+
+inspeksiSnapshot.forEach(docu=>{
+
+const d = docu.data();
+
+if(d.depotId === depotSaya){
+
+tbody.innerHTML += `
+<tr>
+<td>${d.skorAkhir || 0}</td>
+<td>${d.status || "-"}</td>
+<td>${d.tanggalPenilaian || "-"}</td>
+</tr>
+`;
+
+}
+
+});
+
+}
+
+loadHistori();
+
+});
+
+</script>
+
+</body>
+</html>
