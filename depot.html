@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -8,9 +9,14 @@
 
 <style>
 
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:Segoe UI,sans-serif;
+}
+
+body{
 background:#021126;
 color:white;
 display:flex;
@@ -22,16 +28,19 @@ height:100vh;
 background:#042247;
 padding:15px;
 position:fixed;
+left:0;
+top:0;
 }
 
 .sidebar h2{
 text-align:center;
+margin-bottom:20px;
 }
 
 .sidebar button{
 width:100%;
 padding:12px;
-margin-top:10px;
+margin-bottom:10px;
 border:none;
 border-radius:8px;
 background:#00cfff;
@@ -61,6 +70,24 @@ border:1px solid #00cfff;
 margin-bottom:15px;
 }
 
+.grid2{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+
+.stat-card{
+background:#06305f;
+padding:20px;
+border-radius:12px;
+text-align:center;
+border:1px solid #00cfff;
+}
+
+.stat-card h1{
+font-size:40px;
+}
+
 table{
 width:100%;
 border-collapse:collapse;
@@ -74,31 +101,43 @@ padding:10px;
 
 .media-card{
 background:#06305f;
-border:1px solid #00cfff;
 padding:15px;
 border-radius:10px;
+border:1px solid #00cfff;
 margin-bottom:10px;
-}
-
-.media-card h3{
-margin:0 0 10px;
 }
 
 .media-card a{
 display:inline-block;
+margin-top:10px;
 padding:10px 15px;
 background:#00cfff;
 color:black;
-font-weight:bold;
 text-decoration:none;
 border-radius:8px;
+font-weight:bold;
 }
 
-.media-card a:hover{
-opacity:.8;
+@media(max-width:768px){
+
+.sidebar{
+width:100%;
+height:auto;
+position:relative;
+}
+
+.main{
+margin-left:0;
+}
+
+.grid2{
+grid-template-columns:1fr;
+}
+
 }
 
 </style>
+
 </head>
 
 <body>
@@ -127,20 +166,60 @@ opacity:.8;
 
 <div class="main">
 
+
+    <!-- PROFIL -->
+
 <div id="profil" class="page active">
 
 <div class="card">
 
-<h2>Profil Depot</h2>
+<h2>Dashboard Depot</h2>
 
-<p><b>Nama :</b> <span id="namaDepot"></span></p>
-<p><b>Alamat :</b> <span id="alamatDepot"></span></p>
-<p><b>Status :</b> <span id="statusDepot"></span></p>
-<p><b>Skor :</b> <span id="skorDepot"></span></p>
+</div>
+
+<div class="grid2">
+
+<div class="stat-card">
+
+<h1 id="skorDepot">0</h1>
+
+<p>Skor Terakhir</p>
+
+</div>
+
+<div class="stat-card">
+
+<h1 id="statusDepot">-</h1>
+
+<p>Status Depot</p>
 
 </div>
 
 </div>
+
+<div class="card">
+
+<h3>Profil Depot</h3>
+
+<br>
+
+<p>
+<b>Nama Depot :</b>
+<span id="namaDepot"></span>
+</p>
+
+<br>
+
+<p>
+<b>Alamat :</b>
+<span id="alamatDepot"></span>
+</p>
+
+</div>
+
+</div>
+
+<!-- HISTORI -->
 
 <div id="histori" class="page">
 
@@ -151,14 +230,19 @@ opacity:.8;
 <table>
 
 <thead>
+
 <tr>
+
 <th>Skor</th>
 <th>Status</th>
 <th>Tanggal</th>
+
 </tr>
+
 </thead>
 
 <tbody id="historiDepot">
+
 </tbody>
 
 </table>
@@ -166,6 +250,8 @@ opacity:.8;
 </div>
 
 </div>
+
+<!-- MEDIA KIE -->
 
 <div id="kie" class="page">
 
@@ -183,11 +269,9 @@ Loading...
 
 </div>
 
-</div>
 <script type="module">
 
-import { auth } from "./firebase-config.js";
-import { db } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 
 import {
 onAuthStateChanged,
@@ -213,17 +297,18 @@ document
 
 }
 
-window.logout=async()=>{
+window.logout = async()=>{
 
 await signOut(auth);
 
 localStorage.clear();
 
-window.location.href="index.html";
+window.location.href =
+"index.html";
 
 }
 
-let emailLogin="";
+let emailLogin = "";
 
 async function loadProfil(){
 
@@ -236,7 +321,7 @@ snapshot.forEach(docu=>{
 
 const d = docu.data();
 
-if(d.email===emailLogin){
+if(d.email === emailLogin){
 
 document.getElementById("namaDepot").innerHTML =
 d.nama || "-";
@@ -256,75 +341,12 @@ d.skor || 0;
 
 }
 
-async function loadMediaKIE(){
-
-const box =
-document.getElementById("mediaKIEList");
-
-if(!box) return;
-
-box.innerHTML = "";
-
-const snapshot =
-await getDocs(
-collection(db,"media_kie")
-);
-
-snapshot.forEach(docu=>{
-
-const d = docu.data();
-
-box.innerHTML += `
-
-<div class="media-card">
-
-<h3>${d.nama || "-"}</h3>
-
-<p>${d.jenis || "-"}</p>
-
-<a
-href="${d.link || "#"}"
-target="_blank">
-
-Buka Media
-
-</a>
-
-</div>
-
-`;
-
-});
-
-if(snapshot.empty){
-
-box.innerHTML =
-"<p>Belum ada media KIE.</p>";
-
-}
-
-}
-
-onAuthStateChanged(auth,async(user)=>{
-
-if(!user){
-
-window.location.href="index.html";
-return;
-
-}
-
-emailLogin=user.email;
-
-loadProfil();
-loadMediaKIE();
-
 async function loadHistori(){
 
 const tbody =
 document.getElementById("historiDepot");
 
-tbody.innerHTML="";
+tbody.innerHTML = "";
 
 const depotSnapshot =
 await getDocs(
@@ -371,11 +393,74 @@ tbody.innerHTML += `
 });
 
 }
-emailLogin=user.email;
 
-loadProfil();
-loadMediaKIE();
-loadHistori();
+async function loadMediaKIE(){
+
+const box =
+document.getElementById("mediaKIEList");
+
+if(!box) return;
+
+box.innerHTML = "";
+
+const snapshot =
+await getDocs(
+collection(db,"media_kie")
+);
+
+if(snapshot.empty){
+
+box.innerHTML =
+"<p>Belum ada Media KIE.</p>";
+
+return;
+
+}
+
+snapshot.forEach(docu=>{
+
+const d = docu.data();
+
+box.innerHTML += `
+
+<div class="media-card">
+
+<h3>${d.nama || "-"}</h3>
+
+<p>${d.jenis || "-"}</p>
+
+<a
+href="${d.link || "#"}"
+target="_blank">
+
+Buka Media
+
+</a>
+
+</div>
+
+`;
+
+});
+
+}
+
+onAuthStateChanged(auth,async(user)=>{
+
+if(!user){
+
+window.location.href =
+"index.html";
+
+return;
+
+}
+
+emailLogin = user.email;
+
+await loadProfil();
+await loadHistori();
+await loadMediaKIE();
 
 });
 
