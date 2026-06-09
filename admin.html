@@ -141,6 +141,62 @@ margin-left:0;
 
 }
 
+.pulse-marker{
+width:18px;
+height:18px;
+border-radius:50%;
+position:relative;
+}
+
+.green-pulse{
+background:#00ff55;
+}
+
+.red-pulse{
+background:#ff2222;
+}
+
+.orange-pulse{
+background:#ff9900;
+}
+
+.pulse-marker::after{
+content:"";
+position:absolute;
+left:-8px;
+top:-8px;
+width:34px;
+height:34px;
+border-radius:50%;
+animation:pulse 2s infinite;
+}
+
+.green-pulse::after{
+border:3px solid #00ff55;
+}
+
+.red-pulse::after{
+border:3px solid #ff2222;
+}
+
+.orange-pulse::after{
+border:3px solid #ff9900;
+}
+
+@keyframes pulse{
+
+0%{
+transform:scale(0.5);
+opacity:1;
+}
+
+100%{
+transform:scale(2);
+opacity:0;
+}
+
+}
+
 </style>
 
 </head>
@@ -652,17 +708,19 @@ else{
 markerColor = "orange";
 }
 
+let pulseClass = "orange-pulse";
+
+if(d.status === "Memenuhi Syarat"){
+pulseClass = "green-pulse";
+}
+else if(d.status === "Tidak Memenuhi Syarat"){
+pulseClass = "red-pulse";
+}
+
 const icon = L.divIcon({
 className:"",
 html:`
-<div style="
-width:18px;
-height:18px;
-border-radius:50%;
-background:${markerColor};
-border:3px solid white;
-box-shadow:0 0 10px ${markerColor};
-">
+<div class="pulse-marker ${pulseClass}">
 </div>
 `,
 iconSize:[18,18]
