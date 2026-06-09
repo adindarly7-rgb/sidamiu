@@ -211,6 +211,66 @@ background-position:200%;
 
 }
 
+.depot-marker{
+
+position:relative;
+
+font-size:28px;
+
+width:40px;
+height:40px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+.marker-pulse{
+
+position:absolute;
+
+width:30px;
+height:30px;
+
+border-radius:50%;
+
+animation:
+pulseDepot 2s infinite;
+
+z-index:-1;
+
+}
+
+.green-pulse{
+background:
+rgba(0,255,80,.4);
+}
+
+.red-pulse{
+background:
+rgba(255,0,0,.4);
+}
+
+.orange-pulse{
+background:
+rgba(255,170,0,.4);
+}
+
+@keyframes pulseDepot{
+
+0%{
+transform:scale(0.5);
+opacity:1;
+}
+
+100%{
+transform:scale(2.5);
+opacity:0;
+}
+
+}
+
 @media(max-width:900px){
 
 .sidebar{
@@ -812,12 +872,24 @@ pulseClass =
 
 const icon =
 L.divIcon({
+
 className:"",
+
 html:`
-<div class="pulse-marker ${pulseClass}">
+
+<div class="depot-marker">
+
+💧
+
+<div class="marker-pulse ${pulseClass}">
 </div>
+
+</div>
+
 `,
-iconSize:[18,18]
+
+iconSize:[40,40]
+
 });
 
 L.marker(
@@ -831,11 +903,29 @@ icon:icon
 )
 .addTo(map)
 .bindPopup(`
-<b>${d.nama}</b>
+
+<h3>
+💧 ${d.nama}
+</h3>
+
+<b>Latitude :</b>
+${d.latitude}
+
 <br>
+
+<b>Longitude :</b>
+${d.longitude}
+
+<br><br>
+
+<b>Status :</b>
 ${d.status}
+
 <br>
-Skor : ${d.skor}
+
+<b>Skor :</b>
+${d.skor}
+
 `);
 
 }
