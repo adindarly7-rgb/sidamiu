@@ -463,21 +463,50 @@ SIMPAN HASIL PEMERIKSAAN
 <h2>Media KIE</h2>
 
 <input
-type="file"
-id="fileKIE">
+id="namaMedia"
+placeholder="Nama Media">
+
+<select id="jenisMedia">
+
+<option value="PDF">PDF</option>
+<option value="Gambar">Gambar</option>
+<option value="Video">Video</option>
+
+</select>
+
+<input
+id="linkMedia"
+placeholder="Link Google Drive / Github / Website">
 
 <button
+id="simpanMedia"
 class="btn">
 
-UPLOAD FILE
+SIMPAN MEDIA
 
 </button>
 
+<div id="hasilMedia"></div>
+
 <br><br>
 
-<p>
-PDF, Gambar dan Video Edukasi
-</p>
+<table>
+
+<thead>
+
+<tr>
+<th>Nama</th>
+<th>Jenis</th>
+<th>Link</th>
+</tr>
+
+</thead>
+
+<tbody id="mediaTable">
+
+</tbody>
+
+</table>
 
 </div>
 
@@ -495,7 +524,8 @@ doc,
 setDoc,
 updateDoc,
 addDoc,
-writeBatch
+writeBatch,
+deleteDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -951,11 +981,90 @@ alert("Email seluruh depot berhasil dibuat");
 
 };
 
+async function loadMediaKIE(){
+
+const tbody =
+document.getElementById("mediaTable");
+
+if(!tbody) return;
+
+tbody.innerHTML = "";
+
+const snapshot =
+await getDocs(
+collection(db,"media_kie")
+);
+
+snapshot.forEach(docu=>{
+
+const d = docu.data();
+
+tbody.innerHTML += `
+<tr>
+<td>${d.nama || "-"}</td>
+<td>${d.jenis || "-"}</td>
+<td>
+<a
+href="${d.link}"
+target="_blank"
+style="color:#00cfff;"
+>
+Buka
+</a>
+</td>
+</tr>
+`;
+
+});
+
+}
+
+document
+.getElementById("simpanMedia")
+.onclick = async()=>{
+
+const nama =
+document.getElementById("namaMedia").value;
+
+const jenis =
+document.getElementById("jenisMedia").value;
+
+const link =
+document.getElementById("linkMedia").value;
+
+if(!nama || !link){
+
+alert("Nama dan Link wajib diisi");
+return;
+
+}
+
+await addDoc(
+collection(db,"media_kie"),
+{
+nama:nama,
+jenis:jenis,
+link:link,
+createdAt:new Date()
+}
+);
+
+document.getElementById("hasilMedia").innerHTML =
+"<div class='success'>✅ Media berhasil ditambahkan</div>";
+
+document.getElementById("namaMedia").value="";
+document.getElementById("linkMedia").value="";
+
+loadMediaKIE();
+
+};
+
 loadDashboard();
 loadDepotSelect();
 loadHistori();
 loadMap();
 loadAkunDepot();
+loadMediaKIE();
 
 </script>
 
