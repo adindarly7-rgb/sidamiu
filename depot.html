@@ -227,46 +227,6 @@ let emailLogin="";
 
 async function loadProfil(){
 
-async function loadMediaKIE(){
-
-const box =
-document.getElementById("mediaKIEList");
-
-box.innerHTML = "";
-
-const snapshot =
-await getDocs(
-collection(db,"media_kie")
-);
-
-snapshot.forEach(docu=>{
-
-const d = docu.data();
-
-box.innerHTML += `
-
-<div class="media-card">
-
-<h3>${d.nama}</h3>
-
-<p>${d.jenis}</p>
-
-<a
-href="${d.link}"
-target="_blank">
-
-Buka Media
-
-</a>
-
-</div>
-
-`;
-
-});
-
-}
-
 const snapshot =
 await getDocs(
 collection(db,"depots")
@@ -296,6 +256,55 @@ d.skor || 0;
 
 }
 
+async function loadMediaKIE(){
+
+const box =
+document.getElementById("mediaKIEList");
+
+if(!box) return;
+
+box.innerHTML = "";
+
+const snapshot =
+await getDocs(
+collection(db,"media_kie")
+);
+
+snapshot.forEach(docu=>{
+
+const d = docu.data();
+
+box.innerHTML += `
+
+<div class="media-card">
+
+<h3>${d.nama || "-"}</h3>
+
+<p>${d.jenis || "-"}</p>
+
+<a
+href="${d.link || "#"}"
+target="_blank">
+
+Buka Media
+
+</a>
+
+</div>
+
+`;
+
+});
+
+if(snapshot.empty){
+
+box.innerHTML =
+"<p>Belum ada media KIE.</p>";
+
+}
+
+}
+
 onAuthStateChanged(auth,async(user)=>{
 
 if(!user){
@@ -317,9 +326,6 @@ document.getElementById("historiDepot");
 
 tbody.innerHTML="";
 
-const emailLogin =
-localStorage.getItem("email");
-
 const depotSnapshot =
 await getDocs(
 collection(db,"depots")
@@ -332,7 +338,9 @@ depotSnapshot.forEach(docu=>{
 const d = docu.data();
 
 if(d.email === emailLogin){
+
 depotSaya = docu.id;
+
 }
 
 });
@@ -363,7 +371,10 @@ tbody.innerHTML += `
 });
 
 }
+emailLogin=user.email;
 
+loadProfil();
+loadMediaKIE();
 loadHistori();
 
 });
