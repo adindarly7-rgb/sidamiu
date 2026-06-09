@@ -72,6 +72,32 @@ border:1px solid #00cfff;
 padding:10px;
 }
 
+.media-card{
+background:#06305f;
+border:1px solid #00cfff;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.media-card h3{
+margin:0 0 10px;
+}
+
+.media-card a{
+display:inline-block;
+padding:10px 15px;
+background:#00cfff;
+color:black;
+font-weight:bold;
+text-decoration:none;
+border-radius:8px;
+}
+
+.media-card a:hover{
+opacity:.8;
+}
+
 </style>
 </head>
 
@@ -145,11 +171,13 @@ padding:10px;
 
 <div class="card">
 
-<h2>Media KIE</h2>
+<h2>📚 Media KIE</h2>
 
-<p>
-Media edukasi akan tampil di sini
-</p>
+<div id="mediaKIEList">
+
+Loading...
+
+</div>
 
 </div>
 
@@ -199,6 +227,46 @@ let emailLogin="";
 
 async function loadProfil(){
 
+async function loadMediaKIE(){
+
+const box =
+document.getElementById("mediaKIEList");
+
+box.innerHTML = "";
+
+const snapshot =
+await getDocs(
+collection(db,"media_kie")
+);
+
+snapshot.forEach(docu=>{
+
+const d = docu.data();
+
+box.innerHTML += `
+
+<div class="media-card">
+
+<h3>${d.nama}</h3>
+
+<p>${d.jenis}</p>
+
+<a
+href="${d.link}"
+target="_blank">
+
+Buka Media
+
+</a>
+
+</div>
+
+`;
+
+});
+
+}
+
 const snapshot =
 await getDocs(
 collection(db,"depots")
@@ -240,11 +308,12 @@ return;
 emailLogin=user.email;
 
 loadProfil();
+loadMediaKIE();
 
 async function loadHistori(){
 
 const tbody =
-document.getElementById("historiTable");
+document.getElementById("historiDepot");
 
 tbody.innerHTML="";
 
