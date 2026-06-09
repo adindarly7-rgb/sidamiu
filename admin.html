@@ -17,44 +17,67 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Segoe UI,sans-serif;
+font-family:'Segoe UI',sans-serif;
 }
 
 body{
-background:#021126;
+background:
+linear-gradient(
+135deg,
+#021126,
+#042247,
+#06305f
+);
 color:white;
 display:flex;
+min-height:100vh;
 }
 
 .sidebar{
-width:230px;
-height:100vh;
-background:#042247;
+width:250px;
+background:rgba(4,34,71,.95);
+backdrop-filter:blur(10px);
 padding:20px;
 position:fixed;
 left:0;
 top:0;
+height:100vh;
 overflow:auto;
+border-right:1px solid rgba(0,207,255,.3);
 }
 
-.sidebar h2{
+.logo{
+font-size:28px;
+font-weight:bold;
 text-align:center;
-margin-bottom:20px;
+margin-bottom:10px;
+}
+
+.logo-sub{
+text-align:center;
+font-size:12px;
+opacity:.7;
+margin-bottom:25px;
 }
 
 .sidebar button{
 width:100%;
-padding:12px;
+padding:14px;
 margin-bottom:10px;
-background:#00cfff;
 border:none;
-border-radius:8px;
+border-radius:12px;
+background:#00cfff;
 font-weight:bold;
 cursor:pointer;
+transition:.3s;
+}
+
+.sidebar button:hover{
+transform:translateX(5px);
 }
 
 .main{
-margin-left:230px;
+margin-left:250px;
 width:100%;
 padding:20px;
 }
@@ -68,35 +91,63 @@ display:block;
 }
 
 .card{
-background:#042247;
-border:1px solid #00cfff;
-border-radius:12px;
+background:rgba(4,34,71,.85);
+border:1px solid rgba(0,207,255,.3);
+border-radius:20px;
 padding:20px;
-margin-bottom:15px;
+margin-bottom:20px;
+backdrop-filter:blur(10px);
+box-shadow:
+0 10px 25px rgba(0,0,0,.3);
+}
+
+.card:hover{
+transform:translateY(-3px);
+transition:.3s;
 }
 
 .grid4{
 display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:15px;
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+}
+.stat-card{
+background:
+linear-gradient(
+135deg,
+rgba(0,207,255,.15),
+rgba(255,255,255,.03)
+);
+border:1px solid rgba(0,207,255,.3);
+border-radius:20px;
+padding:25px;
+text-align:center;
+}
+
+.stat-card h1{
+font-size:42px;
+margin-bottom:10px;
+color:#00cfff;
 }
 
 input,
 select,
 textarea{
 width:100%;
-padding:12px;
+padding:14px;
 border:none;
-border-radius:8px;
+border-radius:12px;
 margin-top:10px;
 margin-bottom:10px;
+outline:none;
 }
 
 .btn{
 background:#00cfff;
 border:none;
-padding:12px 20px;
-border-radius:8px;
+padding:14px 20px;
+border-radius:12px;
 font-weight:bold;
 cursor:pointer;
 }
@@ -106,15 +157,20 @@ width:100%;
 border-collapse:collapse;
 }
 
+table th{
+background:#06305f;
+}
+
 table th,
 table td{
-border:1px solid #00cfff;
-padding:10px;
+padding:12px;
+border:1px solid rgba(0,207,255,.3);
 }
 
 #map{
 height:500px;
-border-radius:10px;
+border-radius:15px;
+overflow:hidden;
 }
 
 .success{
@@ -123,11 +179,39 @@ font-weight:bold;
 margin-top:10px;
 }
 
-@media(max-width:900px){
+#judulAnimasi{
 
-.grid4{
-grid-template-columns:1fr;
+font-size:36px;
+
+background:linear-gradient(
+90deg,
+#00cfff,
+#00ffcc,
+#00cfff
+);
+
+background-size:200% auto;
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+animation:shine 4s linear infinite;
+
 }
+
+@keyframes shine{
+
+0%{
+background-position:0%;
+}
+
+100%{
+background-position:200%;
+}
+
+}
+
+@media(max-width:900px){
 
 .sidebar{
 width:100%;
@@ -139,73 +223,26 @@ position:relative;
 margin-left:0;
 }
 
-}
-
-.pulse-marker{
-width:18px;
-height:18px;
-border-radius:50%;
-position:relative;
-}
-
-.green-pulse{
-background:#00ff55;
-}
-
-.red-pulse{
-background:#ff2222;
-}
-
-.orange-pulse{
-background:#ff9900;
-}
-
-.pulse-marker::after{
-content:"";
-position:absolute;
-left:-8px;
-top:-8px;
-width:34px;
-height:34px;
-border-radius:50%;
-animation:pulse 2s infinite;
-}
-
-.green-pulse::after{
-border:3px solid #00ff55;
-}
-
-.red-pulse::after{
-border:3px solid #ff2222;
-}
-
-.orange-pulse::after{
-border:3px solid #ff9900;
-}
-
-@keyframes pulse{
-
-0%{
-transform:scale(0.5);
-opacity:1;
-}
-
-100%{
-transform:scale(2);
-opacity:0;
+.grid4{
+grid-template-columns:1fr;
 }
 
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div class="sidebar">
+    <div class="sidebar">
 
-<h2>SIDAMIU</h2>
+<div class="logo">
+💧 SIDAMIU
+</div>
+
+<div class="logo-sub">
+Sistem Informasi Depot Air Minum Isi Ulang
+</div>
 
 <button onclick="showPage('dashboard')">
 📊 Dashboard
@@ -244,28 +281,36 @@ opacity:0;
 <div id="dashboard" class="page active">
 
 <div class="card">
-<h2>Dashboard SIDAMIU</h2>
+
+<h1 id="judulAnimasi">
+💧 SIDAMIU ADMIN
+</h1>
+
+<p style="margin-top:10px;opacity:.8;">
+Sistem Informasi Depot Air Minum Isi Ulang
+</p>
+
 </div>
 
 <div class="grid4">
 
-<div class="card">
-<h2 id="totalDepot">0</h2>
+<div class="stat-card">
+<h1 id="totalDepot">0</h1>
 <p>Total Depot</p>
 </div>
 
-<div class="card">
-<h2 id="ms">0</h2>
+<div class="stat-card">
+<h1 id="ms">0</h1>
 <p>Memenuhi Syarat</p>
 </div>
 
-<div class="card">
-<h2 id="tms">0</h2>
+<div class="stat-card">
+<h1 id="tms">0</h1>
 <p>Tidak Memenuhi Syarat</p>
 </div>
 
-<div class="card">
-<h2 id="rata">0</h2>
+<div class="stat-card">
+<h1 id="rata">0</h1>
 <p>Rata-rata Skor</p>
 </div>
 
@@ -273,7 +318,7 @@ opacity:0;
 
 <div class="card">
 
-<h2>Peta Sebaran Depot</h2>
+<h2>🗺️ Peta Sebaran Depot</h2>
 
 <br>
 
@@ -282,18 +327,23 @@ opacity:0;
 </div>
 
 </div>
+
 <!-- KELOLA DEPOT -->
 
 <div id="depot" class="page">
 
 <div class="card">
 
-<h2>Tambah Depot</h2>
+<h2>🏢 Kelola Depot</h2>
+
+<br>
 
 <button
 class="btn"
 onclick="generateEmailDepot()">
+
 🔄 Generate Email Semua Depot
+
 </button>
 
 <br><br>
@@ -312,8 +362,7 @@ placeholder="Alamat Depot">
 
 <button
 id="gpsBtn"
-class="btn"
-type="button">
+class="btn">
 
 📍 Ambil Lokasi GPS
 
@@ -333,7 +382,7 @@ readonly>
 id="simpanDepot"
 class="btn">
 
-SIMPAN DEPOT
+💾 SIMPAN DEPOT
 
 </button>
 
@@ -349,7 +398,7 @@ SIMPAN DEPOT
 
 <div class="card">
 
-<h2>Input Hasil Pemeriksaan</h2>
+<h2>📝 Input Hasil Pemeriksaan</h2>
 
 <select id="pilihDepot">
 
@@ -384,7 +433,7 @@ type="date">
 id="simpanHasil"
 class="btn">
 
-SIMPAN HASIL PEMERIKSAAN
+✅ SIMPAN HASIL
 
 </button>
 
@@ -400,7 +449,7 @@ SIMPAN HASIL PEMERIKSAAN
 
 <div class="card">
 
-<h2>Histori Pemeriksaan</h2>
+<h2>📋 Histori Pemeriksaan</h2>
 
 <table>
 
@@ -433,19 +482,24 @@ SIMPAN HASIL PEMERIKSAAN
 
 <div class="card">
 
-<h2>Daftar Akun Depot</h2>
+<h2>👤 Akun Depot</h2>
 
 <table>
 
 <thead>
+
 <tr>
-<th>Depot</th>
+
+<th>Nama Depot</th>
 <th>Email Login</th>
 <th>Password Awal</th>
+
 </tr>
+
 </thead>
 
 <tbody id="akunTable">
+
 </tbody>
 
 </table>
@@ -460,7 +514,7 @@ SIMPAN HASIL PEMERIKSAAN
 
 <div class="card">
 
-<h2>Media KIE</h2>
+<h2>📚 Media KIE</h2>
 
 <input
 id="namaMedia"
@@ -476,13 +530,13 @@ placeholder="Nama Media">
 
 <input
 id="linkMedia"
-placeholder="Link Google Drive / Github / Website">
+placeholder="Link Google Drive / Youtube / Website">
 
 <button
 id="simpanMedia"
 class="btn">
 
-SIMPAN MEDIA
+➕ SIMPAN MEDIA
 
 </button>
 
@@ -495,10 +549,12 @@ SIMPAN MEDIA
 <thead>
 
 <tr>
+
 <th>Nama</th>
 <th>Jenis</th>
 <th>Link</th>
 <th>Aksi</th>
+
 </tr>
 
 </thead>
@@ -514,6 +570,7 @@ SIMPAN MEDIA
 </div>
 
 </div>
+
 <script type="module">
 
 import { auth, db } from "./firebase-config.js";
@@ -536,7 +593,7 @@ onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-window.showPage=function(page){
+window.showPage = function(page){
 
 document
 .querySelectorAll(".page")
@@ -550,8 +607,6 @@ document
 
 window.logout = async()=>{
 
-try{
-
 await signOut(auth);
 
 localStorage.clear();
@@ -560,54 +615,62 @@ window.location.href =
 "index.html";
 
 }
-catch(error){
 
-console.log(error);
+onAuthStateChanged(auth,(user)=>{
 
-alert("Logout gagal");
+if(!user){
+
+window.location.href =
+"index.html";
 
 }
 
-}
+});
 
 async function loadDashboard(){
 
-let total=0;
-let ms=0;
-let tms=0;
-let totalSkor=0;
+let total = 0;
+let ms = 0;
+let tms = 0;
+let totalSkor = 0;
 
-const snapshot=
+const snapshot =
 await getDocs(
 collection(db,"depots")
 );
 
 snapshot.forEach(docu=>{
 
-const d=docu.data();
+const d = docu.data();
 
 total++;
 
-totalSkor+=
-Number(d.skor||0);
+totalSkor +=
+Number(d.skor || 0);
 
 if(
-(d.status||"")
+(d.status || "")
 .includes("Memenuhi")
 ){
 ms++;
-}else{
+}
+else{
 tms++;
 }
 
 });
 
-document.getElementById("totalDepot").innerHTML=total;
-document.getElementById("ms").innerHTML=ms;
-document.getElementById("tms").innerHTML=tms;
+document.getElementById("totalDepot").innerHTML =
+total;
 
-document.getElementById("rata").innerHTML=
-total>0
+document.getElementById("ms").innerHTML =
+ms;
+
+document.getElementById("tms").innerHTML =
+tms;
+
+document.getElementById("rata").innerHTML =
+total > 0
 ?
 (totalSkor/total).toFixed(1)
 :
@@ -617,20 +680,20 @@ total>0
 
 async function loadDepotSelect(){
 
-const select=
+const select =
 document.getElementById("pilihDepot");
 
-select.innerHTML=
+select.innerHTML =
 "<option value=''>Pilih Depot</option>";
 
-const snapshot=
+const snapshot =
 await getDocs(
 collection(db,"depots")
 );
 
 snapshot.forEach(docu=>{
 
-const d=docu.data();
+const d = docu.data();
 
 select.innerHTML += `
 <option value="${docu.id}">
@@ -642,13 +705,10 @@ ${d.nama}
 
 }
 
-async function loadHistori(){
-    async function loadAkunDepot(){
+async function loadAkunDepot(){
 
 const tbody =
 document.getElementById("akunTable");
-
-if(!tbody) return;
 
 tbody.innerHTML = "";
 
@@ -663,7 +723,7 @@ const d = docu.data();
 
 tbody.innerHTML += `
 <tr>
-<td>${d.nama}</td>
+<td>${d.nama || "-"}</td>
 <td>${d.email || "-"}</td>
 <td>12345678</td>
 </tr>
@@ -673,25 +733,27 @@ tbody.innerHTML += `
 
 }
 
-const tbody=
+async function loadHistori(){
+
+const tbody =
 document.getElementById("historiTable");
 
-tbody.innerHTML="";
+tbody.innerHTML = "";
 
-const snapshot=
+const snapshot =
 await getDocs(
 collection(db,"inspections")
 );
 
 snapshot.forEach(docu=>{
 
-const d=docu.data();
+const d = docu.data();
 
 tbody.innerHTML += `
 <tr>
-<td>${d.depotId || ""}</td>
+<td>${d.depotId || "-"}</td>
 <td>${d.skorAkhir || 0}</td>
-<td>${d.status || ""}</td>
+<td>${d.status || "-"}</td>
 <td>${d.tanggalPenilaian || "-"}</td>
 </tr>
 `;
@@ -702,7 +764,7 @@ tbody.innerHTML += `
 
 async function loadMap(){
 
-const snapshot=
+const snapshot =
 await getDocs(
 collection(db,"depots")
 );
@@ -725,30 +787,31 @@ snapshot.forEach(docu=>{
 
 const d = docu.data();
 
-if(d.latitude && d.longitude){
+if(
+d.latitude &&
+d.longitude
+){
 
-let markerColor = "blue";
+let pulseClass =
+"orange-pulse";
 
-if(d.status === "Memenuhi Syarat"){
-markerColor = "green";
+if(
+d.status ===
+"Memenuhi Syarat"
+){
+pulseClass =
+"green-pulse";
 }
-else if(d.status === "Tidak Memenuhi Syarat"){
-markerColor = "red";
-}
-else{
-markerColor = "orange";
-}
-
-let pulseClass = "orange-pulse";
-
-if(d.status === "Memenuhi Syarat"){
-pulseClass = "green-pulse";
-}
-else if(d.status === "Tidak Memenuhi Syarat"){
-pulseClass = "red-pulse";
+else if(
+d.status ===
+"Tidak Memenuhi Syarat"
+){
+pulseClass =
+"red-pulse";
 }
 
-const icon = L.divIcon({
+const icon =
+L.divIcon({
 className:"",
 html:`
 <div class="pulse-marker ${pulseClass}">
@@ -768,28 +831,11 @@ icon:icon
 )
 .addTo(map)
 .bindPopup(`
-<div style="min-width:200px">
-
-<h3>${d.nama}</h3>
-
-<hr>
-
-<b>Status :</b>
+<b>${d.nama}</b>
+<br>
 ${d.status}
 <br>
-
-<b>Skor :</b>
-${d.skor}
-<br>
-
-<b>Pemilik :</b>
-${d.pemilik || "-"}
-<br>
-
-<b>Alamat :</b>
-${d.alamat || "-"}
-
-</div>
+Skor : ${d.skor}
 `);
 
 }
@@ -800,30 +846,43 @@ ${d.alamat || "-"}
 
 document
 .getElementById("gpsBtn")
-.onclick=()=>{
+.onclick = ()=>{
 
 if(!navigator.geolocation){
 
-alert("GPS tidak didukung");
+alert(
+"GPS tidak didukung"
+);
+
 return;
 
 }
 
-navigator.geolocation.getCurrentPosition(
+navigator
+.geolocation
+.getCurrentPosition(
 
 (pos)=>{
 
-document.getElementById("latitudeDepot").value=
+document
+.getElementById(
+"latitudeDepot"
+).value =
 pos.coords.latitude;
 
-document.getElementById("longitudeDepot").value=
+document
+.getElementById(
+"longitudeDepot"
+).value =
 pos.coords.longitude;
 
 },
 
 ()=>{
 
-alert("Gagal mengambil GPS");
+alert(
+"Gagal mengambil GPS"
+);
 
 }
 
@@ -833,26 +892,44 @@ alert("Gagal mengambil GPS");
 
 document
 .getElementById("simpanDepot")
-.onclick=async()=>{
+.onclick = async()=>{
 
-const nama=
-document.getElementById("namaDepot").value;
+const nama =
+document
+.getElementById(
+"namaDepot"
+).value;
 
-const pemilik=
-document.getElementById("pemilikDepot").value;
+const pemilik =
+document
+.getElementById(
+"pemilikDepot"
+).value;
 
-const alamat=
-document.getElementById("alamatDepot").value;
+const alamat =
+document
+.getElementById(
+"alamatDepot"
+).value;
 
-const latitude=
-document.getElementById("latitudeDepot").value;
+const latitude =
+document
+.getElementById(
+"latitudeDepot"
+).value;
 
-const longitude=
-document.getElementById("longitudeDepot").value;
+const longitude =
+document
+.getElementById(
+"longitudeDepot"
+).value;
 
 if(!nama){
 
-alert("Nama depot wajib diisi");
+alert(
+"Nama depot wajib diisi"
+);
+
 return;
 
 }
@@ -862,7 +939,9 @@ await setDoc(
 doc(
 db,
 "depots",
-nama.replaceAll(" ","").toUpperCase()
+nama
+.replaceAll(" ","")
+.toUpperCase()
 ),
 
 {
@@ -878,7 +957,10 @@ role:"depot"
 
 );
 
-document.getElementById("hasilDepot").innerHTML=
+document
+.getElementById(
+"hasilDepot"
+).innerHTML =
 "<div class='success'>✅ Depot berhasil ditambahkan</div>";
 
 loadDashboard();
@@ -888,21 +970,29 @@ loadDepotSelect();
 
 document
 .getElementById("simpanHasil")
-.onclick=async()=>{
+.onclick = async()=>{
 
-const depotId=
-document.getElementById("pilihDepot").value;
+const depotId =
+document.getElementById(
+"pilihDepot"
+).value;
 
-const skor=
+const skor =
 Number(
-document.getElementById("skorInspeksi").value
+document.getElementById(
+"skorInspeksi"
+).value
 );
 
-const status=
-document.getElementById("statusInspeksi").value;
+const status =
+document.getElementById(
+"statusInspeksi"
+).value;
 
-const tanggal=
-document.getElementById("tanggalInspeksi").value;
+const tanggal =
+document.getElementById(
+"tanggalInspeksi"
+).value;
 
 if(!depotId){
 
@@ -937,23 +1027,16 @@ timestamp:new Date()
 }
 );
 
-document.getElementById("hasilInspeksi").innerHTML=
+document.getElementById(
+"hasilInspeksi"
+).innerHTML =
 "<div class='success'>✅ Hasil pemeriksaan berhasil disimpan</div>";
 
 loadDashboard();
 loadHistori();
 
 };
-onAuthStateChanged(auth,(user)=>{
 
-if(!user){
-
-window.location.href =
-"index.html";
-
-}
-
-});
 window.generateEmailDepot = async()=>{
 
 const snapshot =
@@ -961,16 +1044,19 @@ await getDocs(
 collection(db,"depots")
 );
 
-const batch = writeBatch(db);
+const batch =
+writeBatch(db);
 
-snapshot.forEach((docu)=>{
+snapshot.forEach(docu=>{
 
-const nama = docu.id.toLowerCase();
+const nama =
+docu.id.toLowerCase();
 
 batch.update(
 doc(db,"depots",docu.id),
 {
-email: `${nama}@sidamiu.id`
+email:
+`${nama}@sidamiu.id`
 }
 );
 
@@ -978,16 +1064,20 @@ email: `${nama}@sidamiu.id`
 
 await batch.commit();
 
-alert("Email seluruh depot berhasil dibuat");
+alert(
+"Email seluruh depot berhasil dibuat"
+);
+
+loadAkunDepot();
 
 };
 
 async function loadMediaKIE(){
 
 const tbody =
-document.getElementById("mediaTable");
-
-if(!tbody) return;
+document.getElementById(
+"mediaTable"
+);
 
 tbody.innerHTML = "";
 
@@ -998,7 +1088,8 @@ collection(db,"media_kie")
 
 snapshot.forEach(docu=>{
 
-const d = docu.data();
+const d =
+docu.data();
 
 tbody.innerHTML += `
 <tr>
@@ -1038,17 +1129,26 @@ document
 .onclick = async()=>{
 
 const nama =
-document.getElementById("namaMedia").value;
+document.getElementById(
+"namaMedia"
+).value;
 
 const jenis =
-document.getElementById("jenisMedia").value;
+document.getElementById(
+"jenisMedia"
+).value;
 
 const link =
-document.getElementById("linkMedia").value;
+document.getElementById(
+"linkMedia"
+).value;
 
 if(!nama || !link){
 
-alert("Nama dan Link wajib diisi");
+alert(
+"Nama dan Link wajib diisi"
+);
+
 return;
 
 }
@@ -1063,11 +1163,18 @@ createdAt:new Date()
 }
 );
 
-document.getElementById("hasilMedia").innerHTML =
+document.getElementById(
+"hasilMedia"
+).innerHTML =
 "<div class='success'>✅ Media berhasil ditambahkan</div>";
 
-document.getElementById("namaMedia").value="";
-document.getElementById("linkMedia").value="";
+document.getElementById(
+"namaMedia"
+).value = "";
+
+document.getElementById(
+"linkMedia"
+).value = "";
 
 loadMediaKIE();
 
@@ -1076,7 +1183,9 @@ loadMediaKIE();
 window.hapusMedia = async(id)=>{
 
 const yakin =
-confirm("Yakin ingin menghapus media ini?");
+confirm(
+"Yakin ingin menghapus media ini?"
+);
 
 if(!yakin) return;
 
@@ -1084,7 +1193,9 @@ await deleteDoc(
 doc(db,"media_kie",id)
 );
 
-alert("Media berhasil dihapus");
+alert(
+"Media berhasil dihapus"
+);
 
 loadMediaKIE();
 
