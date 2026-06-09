@@ -638,22 +638,69 @@ snapshot.forEach(docu=>{
 
 const d = docu.data();
 
-if(
-d.latitude &&
-d.longitude
-){
+if(d.latitude && d.longitude){
 
-L.marker([
+let markerColor = "blue";
+
+if(d.status === "Memenuhi Syarat"){
+markerColor = "green";
+}
+else if(d.status === "Tidak Memenuhi Syarat"){
+markerColor = "red";
+}
+else{
+markerColor = "orange";
+}
+
+const icon = L.divIcon({
+className:"",
+html:`
+<div style="
+width:18px;
+height:18px;
+border-radius:50%;
+background:${markerColor};
+border:3px solid white;
+box-shadow:0 0 10px ${markerColor};
+">
+</div>
+`,
+iconSize:[18,18]
+});
+
+L.marker(
+[
 Number(d.latitude),
 Number(d.longitude)
-])
+],
+{
+icon:icon
+}
+)
 .addTo(map)
 .bindPopup(`
-<b>${d.nama}</b>
-<br>
+<div style="min-width:200px">
+
+<h3>${d.nama}</h3>
+
+<hr>
+
+<b>Status :</b>
 ${d.status}
 <br>
-Skor : ${d.skor}
+
+<b>Skor :</b>
+${d.skor}
+<br>
+
+<b>Pemilik :</b>
+${d.pemilik || "-"}
+<br>
+
+<b>Alamat :</b>
+${d.alamat || "-"}
+
+</div>
 `);
 
 }
