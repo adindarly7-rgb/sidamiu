@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -8,47 +9,152 @@
 
 <style>
 
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:#021126;
-font-family:Segoe UI,sans-serif;
+background:linear-gradient(
+135deg,
+#021126,
+#042247,
+#06305f
+);
+overflow:hidden;
+position:relative;
+}
+
+.bg-animation{
+position:absolute;
+width:100%;
+height:100%;
+overflow:hidden;
+}
+
+.bg-animation::before,
+.bg-animation::after{
+content:"";
+position:absolute;
+width:500px;
+height:500px;
+border-radius:50%;
+background:rgba(0,207,255,.15);
+filter:blur(100px);
+animation:float 10s infinite alternate;
+}
+
+.bg-animation::before{
+top:-150px;
+left:-150px;
+}
+
+.bg-animation::after{
+bottom:-150px;
+right:-150px;
+animation-delay:2s;
+}
+
+@keyframes float{
+
+0%{
+transform:translateY(0);
+}
+
+100%{
+transform:translateY(80px);
+}
+
 }
 
 .login-box{
-width:400px;
-background:#042247;
-padding:30px;
-border-radius:15px;
-border:1px solid #00cfff;
+width:420px;
+max-width:92%;
+padding:35px;
+border-radius:25px;
+background:rgba(4,34,71,.75);
+backdrop-filter:blur(15px);
+border:1px solid rgba(0,207,255,.5);
+box-shadow:
+0 0 30px rgba(0,207,255,.3);
 color:white;
+position:relative;
+z-index:2;
+}
+
+.logo{
+font-size:60px;
+text-align:center;
+margin-bottom:10px;
+animation:floatLogo 3s ease-in-out infinite;
+}
+
+@keyframes floatLogo{
+
+0%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-8px);
+}
+
+100%{
+transform:translateY(0);
+}
+
 }
 
 h1{
 text-align:center;
+margin-bottom:10px;
+}
+
+.subtitle{
+text-align:center;
+opacity:.8;
 margin-bottom:25px;
+font-size:14px;
+}
+
+.input-group{
+margin-bottom:15px;
 }
 
 input{
 width:100%;
-padding:12px;
-margin-bottom:12px;
+padding:14px;
 border:none;
-border-radius:8px;
-box-sizing:border-box;
+border-radius:10px;
+outline:none;
+font-size:15px;
+}
+
+input:focus{
+box-shadow:0 0 10px #00cfff;
 }
 
 button{
 width:100%;
-padding:12px;
+padding:14px;
 background:#00cfff;
 border:none;
-border-radius:8px;
+border-radius:10px;
 font-weight:bold;
+font-size:15px;
 cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 0 15px #00cfff;
 }
 
 #hasil{
@@ -57,30 +163,80 @@ text-align:center;
 font-weight:bold;
 }
 
+.footer{
+margin-top:20px;
+text-align:center;
+font-size:12px;
+opacity:.7;
+}
+
+@media(max-width:768px){
+
+.login-box{
+padding:25px;
+}
+
+.logo{
+font-size:45px;
+}
+
+h1{
+font-size:24px;
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
 
+<div class="bg-animation"></div>
+
 <div class="login-box">
 
+<div class="logo">
+💧
+</div>
+
 <h1>SIDAMIU</h1>
+
+<div class="subtitle">
+Sistem Informasi Depot Air Minum Isi Ulang
+</div>
+
+<div class="input-group">
 
 <input
 type="email"
 id="email"
-placeholder="Email">
+placeholder="📧 Email">
+
+</div>
+
+<div class="input-group">
 
 <input
 type="password"
 id="password"
-placeholder="Password">
+placeholder="🔒 Password">
+
+</div>
 
 <button id="loginBtn">
-LOGIN
+
+MASUK KE SISTEM
+
 </button>
 
 <div id="hasil"></div>
+
+<div class="footer">
+
+© SIDAMIU 2025
+
+</div>
 
 </div>
 
@@ -111,6 +267,9 @@ document.getElementById("password").value;
 
 try{
 
+document.getElementById("hasil").innerHTML =
+"⏳ Sedang login...";
+
 await signInWithEmailAndPassword(
 auth,
 email,
@@ -125,7 +284,7 @@ doc(db,"user",email)
 if(!userDoc.exists()){
 
 document.getElementById("hasil").innerHTML =
-"Role user tidak ditemukan";
+"❌ Role user tidak ditemukan";
 
 return;
 
@@ -138,6 +297,7 @@ if(role === "admin"){
 
 window.location.href =
 "admin.html";
+
 }
 else if(role === "depot"){
 
@@ -148,7 +308,7 @@ window.location.href =
 else{
 
 document.getElementById("hasil").innerHTML =
-"Role tidak valid";
+"❌ Role tidak valid";
 
 }
 
@@ -156,7 +316,7 @@ document.getElementById("hasil").innerHTML =
 catch(err){
 
 document.getElementById("hasil").innerHTML =
-"Login gagal";
+"❌ Login gagal";
 
 console.log(err);
 
