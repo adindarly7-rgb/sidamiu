@@ -23,13 +23,24 @@ display:flex;
 }
 
 .sidebar{
-width:220px;
+
+width:260px;
 height:100vh;
-background:#042247;
-padding:15px;
+
+background:#071d3b;
+
+padding:25px;
+
 position:fixed;
+
 left:0;
 top:0;
+
+overflow:auto;
+
+box-shadow:
+0 0 30px rgba(0,0,0,.4);
+
 }
 
 .sidebar h2{
@@ -49,9 +60,13 @@ cursor:pointer;
 }
 
 .main{
-margin-left:240px;
-padding:20px;
-width:100%;
+
+margin-left:260px;
+
+width:calc(100% - 260px);
+
+padding:25px;
+
 }
 
 .page{
@@ -63,11 +78,22 @@ display:block;
 }
 
 .card{
-background:#042247;
-padding:20px;
-border-radius:12px;
-border:1px solid #00cfff;
-margin-bottom:15px;
+
+background:rgba(4,34,71,.7);
+
+padding:25px;
+
+border-radius:24px;
+
+border:1px solid rgba(0,207,255,.3);
+
+margin-bottom:20px;
+
+backdrop-filter:blur(12px);
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.25);
+
 }
 
 .grid2{
@@ -77,16 +103,49 @@ gap:15px;
 }
 
 .stat-card{
-background:#06305f;
-padding:20px;
-border-radius:12px;
+cursor:pointer;
+background:
+linear-gradient(
+135deg,
+rgba(0,207,255,.15),
+rgba(255,255,255,.05)
+);
+
+padding:25px;
+
+border-radius:24px;
+
 text-align:center;
-border:1px solid #00cfff;
+
+border:1px solid rgba(0,207,255,.3);
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.2);
+
+transition:.3s;
+
 }
 
 .stat-card h1{
-font-size:40px;
+
+font-size:56px;
+
+color:#00cfff;
+
 }
+
+.status-ms{
+color:#00ff88 !important;
+}
+
+.status-tms{
+color:#ff4444 !important;
+}
+
+.status-belum{
+color:#ffc107 !important;
+}
+
 
 table{
 width:100%;
@@ -99,39 +158,186 @@ border:1px solid #00cfff;
 padding:10px;
 }
 
+.stat-card:hover{
+
+transform:
+translateY(-5px);
+
+}
+
+
 .media-card{
-background:#06305f;
-padding:15px;
-border-radius:10px;
-border:1px solid #00cfff;
-margin-bottom:10px;
+
+background:
+linear-gradient(
+135deg,
+rgba(0,207,255,.12),
+rgba(255,255,255,.04)
+);
+
+padding:20px;
+
+border-radius:20px;
+
+border:1px solid rgba(0,207,255,.3);
+
+margin-bottom:15px;
+
+box-shadow:
+0 10px 25px rgba(0,0,0,.2);
+
+transition:.3s;
+
+}
+
+.media-card:hover{
+
+transform:
+translateY(-4px);
+
 }
 
 .media-card a{
+.media-card a:hover{
+
+transform:
+translateY(-3px);
+
+box-shadow:
+0 0 20px rgba(0,207,255,.5);
+
+}
+
 display:inline-block;
-margin-top:10px;
-padding:10px 15px;
+
+margin-top:15px;
+
+padding:12px 18px;
+
 background:#00cfff;
-color:black;
+
+color:#021126;
+
 text-decoration:none;
-border-radius:8px;
+
+border-radius:12px;
+
 font-weight:bold;
+
+transition:.3s;
+
+}
+
+.menu-btn{
+
+display:none;
+
+position:fixed;
+
+top:15px;
+left:15px;
+
+width:50px;
+height:50px;
+
+background:#00cfff;
+
+color:#021126;
+
+font-size:28px;
+
+font-weight:bold;
+
+border-radius:12px;
+
+align-items:center;
+justify-content:center;
+
+cursor:pointer;
+
+z-index:9999;
+
+box-shadow:
+0 10px 25px rgba(0,0,0,.3);
+
+}
+
+.histori-card{
+
+background:#06305f;
+
+border:1px solid rgba(0,207,255,.3);
+
+border-radius:18px;
+
+padding:18px;
+
+margin-bottom:12px;
+
+box-shadow:
+0 10px 25px rgba(0,0,0,.2);
+
+}
+
+.histori-date{
+
+font-weight:bold;
+
+margin-bottom:10px;
+
+color:#00cfff;
+
 }
 
 @media(max-width:768px){
 
+.menu-btn{
+display:flex;
+}
+
 .sidebar{
-width:100%;
-height:auto;
-position:relative;
+
+left:-260px;
+
+width:260px;
+
+height:100vh;
+
+transition:.3s;
+
+z-index:999;
+
+}
+
+.sidebar.show{
+
+left:0;
+
+box-shadow:
+0 0 40px rgba(0,0,0,.6);
+
 }
 
 .main{
+
 margin-left:0;
+
+width:100%;
+
+padding:80px 15px 15px;
+
 }
 
 .grid2{
+
 grid-template-columns:1fr;
+
+}
+
+.card{
+
+padding:15px;
+
 }
 
 }
@@ -142,9 +348,24 @@ grid-template-columns:1fr;
 
 <body>
 
+<div id="menuBtn" class="menu-btn">
+☰
+</div>
+
 <div class="sidebar">
 
-<h2>DEPOT</h2>
+<h2>
+💧 DEPOT
+</h2>
+
+<p style="
+text-align:center;
+font-size:12px;
+opacity:.7;
+margin-bottom:20px;
+">
+SIDAMIU
+</p>
 
 <button onclick="showPage('profil')">
 🏢 Profil Depot
@@ -173,13 +394,29 @@ grid-template-columns:1fr;
 
 <div class="card">
 
-<h2>Dashboard Depot</h2>
+<h1 style="
+font-size:40px;
+color:#00cfff;
+margin-bottom:10px;
+">
+💧 SIDAMIU DEPOT
+</h1>
+
+<p style="
+opacity:.8;
+">
+Sistem Informasi Depot Air Minum Isi Ulang
+</p>
 
 </div>
 
 <div class="grid2">
 
 <div class="stat-card">
+
+<div style="font-size:34px;">
+📊
+</div>
 
 <h1 id="skorDepot">0</h1>
 
@@ -188,6 +425,10 @@ grid-template-columns:1fr;
 </div>
 
 <div class="stat-card">
+
+<div style="font-size:34px;">
+✅
+</div>
 
 <h1 id="statusDepot">-</h1>
 
@@ -227,25 +468,11 @@ grid-template-columns:1fr;
 
 <h2>Histori Pemeriksaan</h2>
 
-<table>
+<div id="historiDepot">
 
-<thead>
+Loading...
 
-<tr>
-
-<th>Skor</th>
-<th>Status</th>
-<th>Tanggal</th>
-
-</tr>
-
-</thead>
-
-<tbody id="historiDepot">
-
-</tbody>
-
-</table>
+</div>
 
 </div>
 
@@ -329,11 +556,76 @@ d.nama || "-";
 document.getElementById("alamatDepot").innerHTML =
 d.alamat || "-";
 
-document.getElementById("statusDepot").innerHTML =
+const statusEl =
+document.getElementById("statusDepot");
+
+statusEl.innerHTML =
 d.status || "-";
 
-document.getElementById("skorDepot").innerHTML =
+statusEl.classList.remove(
+"status-ms",
+"status-tms",
+"status-belum"
+);
+
+if(d.status === "Memenuhi Syarat"){
+
+statusEl.classList.add(
+"status-ms"
+);
+
+statusEl.innerHTML =
+"🟢 Memenuhi";
+
+}
+else if(
+d.status ===
+"Tidak Memenuhi Syarat"
+){
+
+statusEl.classList.add(
+"status-tms"
+);
+
+statusEl.innerHTML =
+"🔴 Tidak MS";
+
+}
+else{
+
+statusEl.classList.add(
+"status-belum"
+);
+
+statusEl.innerHTML =
+"🟡 Belum";
+
+}
+
+const skorEl =
+document.getElementById("skorDepot");
+
+skorEl.innerHTML =
 d.skor || 0;
+
+if((d.skor || 0) >= 80){
+
+skorEl.style.color =
+"#00ff88";
+
+}
+else if((d.skor || 0) >= 60){
+
+skorEl.style.color =
+"#ffc107";
+
+}
+else{
+
+skorEl.style.color =
+"#ff4444";
+
+}
 
 }
 
@@ -381,11 +673,25 @@ const d = docu.data();
 if(d.depotId === depotSaya){
 
 tbody.innerHTML += `
-<tr>
-<td>${d.skorAkhir || 0}</td>
-<td>${d.status || "-"}</td>
-<td>${d.tanggalPenilaian || "-"}</td>
-</tr>
+
+<div class="histori-card">
+
+<div class="histori-date">
+📅 ${d.tanggalPenilaian || "-"}
+</div>
+
+<div>
+📊 Skor : ${d.skorAkhir || 0}
+</div>
+
+<div>
+${d.status === "Memenuhi Syarat"
+? "✅ Memenuhi Syarat"
+: "❌ Tidak Memenuhi Syarat"}
+</div>
+
+</div>
+
 `;
 
 }
@@ -425,9 +731,22 @@ box.innerHTML += `
 
 <div class="media-card">
 
+<div style="
+font-size:40px;
+margin-bottom:10px;
+">
+
+${d.jenis === "PDF" ? "📄" :
+d.jenis === "Video" ? "🎥" :
+"🖼️"}
+
+</div>
+
 <h3>${d.nama || "-"}</h3>
 
-<p>${d.jenis || "-"}</p>
+<p style="opacity:.8;">
+${d.jenis || "-"}
+</p>
 
 <a
 href="${d.link || "#"}"
@@ -463,6 +782,16 @@ await loadHistori();
 await loadMediaKIE();
 
 });
+
+document
+.getElementById("menuBtn")
+.onclick = ()=>{
+
+document
+.querySelector(".sidebar")
+.classList.toggle("show");
+
+};
 
 </script>
 
