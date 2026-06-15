@@ -460,6 +460,38 @@ Sistem Informasi Depot Air Minum Isi Ulang
 
 </div>
 
+<div class="card">
+
+<h2>
+📋 Hasil Pemeriksaan Terakhir
+</h2>
+
+<br>
+
+<p>
+<b>Status :</b>
+<span id="statusTerakhir">-</span>
+</p>
+
+<br>
+
+<p>
+<b>Skor :</b>
+<span id="skorTerakhir">-</span>
+</p>
+
+<br>
+
+<p>
+<b>Hasil Temuan :</b>
+</p>
+
+<div id="temuanTerakhir">
+
+-
+
+</div>
+
 <br>
 
 <p>
@@ -729,7 +761,7 @@ await getDocs(
 collection(db,"inspections")
 );
 
-let hasil = null;
+let dataDepot = [];
 
 snapshot.forEach(docu=>{
 
@@ -737,13 +769,18 @@ const d = docu.data();
 
 if(d.depotId === depotSaya){
 
-hasil = d;
+dataDepot.push(d);
 
 }
 
 });
 
-if(!hasil) return;
+if(dataDepot.length === 0) return;
+
+/* ambil data terakhir */
+
+const hasil =
+dataDepot[dataDepot.length - 1];
 
 document.getElementById(
 "statusTerakhir"
@@ -770,6 +807,26 @@ if(hasil.fotoTemuan){
 document.getElementById(
 "fotoTerakhir"
 ).innerHTML =
+
+`<a
+href="${hasil.fotoTemuan}"
+target="_blank"
+style="
+color:#00cfff;
+font-weight:bold;
+">
+
+📷 Lihat Dokumentasi
+
+</a>`;
+
+}else{
+
+document.getElementById(
+"fotoTerakhir"
+).innerHTML = "-";
+
+
 
 `<a
 href="${hasil.fotoTemuan}"
