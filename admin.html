@@ -635,7 +635,7 @@ class="btn">
 
 📍 Ambil Lokasi GPS
 
-</button>
+</button
 
 <input
 type="number"
@@ -702,6 +702,18 @@ Tidak Memenuhi Syarat
 id="tanggalInspeksi"
 type="date">
 
+<textarea
+id="hasilTemuan"
+placeholder="Hasil Temuan Pemeriksaan Lapangan"
+rows="4"></textarea>
+
+<textarea
+id="hasilLab"
+placeholder="Hasil Pemeriksaan Laboratorium"
+rows="4"></textarea>
+<input
+id="fotoTemuan"
+placeholder="Link Foto Temuan Google Drive">
 <button
 id="simpanHasil"
 class="btn">
@@ -1306,6 +1318,20 @@ const tanggal =
 document.getElementById(
 "tanggalInspeksi"
 ).value;
+const hasilTemuan =
+document.getElementById(
+"hasilTemuan"
+).value;
+
+const hasilLab =
+document.getElementById(
+"hasilLab"
+).value;
+
+const fotoTemuan =
+document.getElementById(
+"fotoTemuan"
+).value;
 
 if(!depotId){
 
@@ -1336,6 +1362,11 @@ depotId:depotId,
 skorAkhir:skor,
 status:status,
 tanggalPenilaian:tanggal,
+
+hasilTemuan:hasilTemuan,
+
+hasilLab:hasilLab,
+fotoTemuan:fotoTemuan,
 timestamp:new Date()
 }
 );
