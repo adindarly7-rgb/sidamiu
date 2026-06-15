@@ -761,6 +761,7 @@ class="btn">
 <th>Temuan</th>
 <th>Lab</th>
 <th>Foto</th>
+<th>PDF</th>
 
 </tr>
 
@@ -878,6 +879,7 @@ import { auth, db } from "./firebase-config.js";
 import {
 collection,
 getDocs,
+getDoc,
 doc,
 setDoc,
 updateDoc,
@@ -885,6 +887,7 @@ addDoc,
 writeBatch,
 deleteDoc
 }
+
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
@@ -1084,8 +1087,22 @@ style="color:#00cfff;">
 
 </td>
 
+<td>
+
+<button
+class="btn"
+onclick="cetakPdf('${docu.id}')">
+
+📄 PDF
+
+</button>
+
+</td>
+
 </tr>
 `;
+
+
 
 });
 
@@ -1420,6 +1437,15 @@ document.getElementById(
 ).innerHTML =
 "<div class='success'>✅ Hasil pemeriksaan berhasil disimpan</div>";
 
+
+window.cetakPdf = async(id)=>{
+
+alert(
+"PDF V3 akan kita pasang setelah tombol muncul"
+);
+
+};
+
 loadDashboard();
 loadHistori();
 
@@ -1598,93 +1624,6 @@ document
 .classList.toggle("show");
 
 };
-
-document
-.getElementById("downloadPdf")
-.onclick = async()=>{
-
-const { jsPDF } =
-window.jspdf;
-
-const pdf =
-new jsPDF();
-
-pdf.setFontSize(16);
-
-pdf.text(
-"SIDAMIU",
-20,
-20
-);
-
-pdf.setFontSize(12);
-
-pdf.text(
-"Laporan Histori Pemeriksaan Depot",
-20,
-30
-);
-
-const snapshot =
-await getDocs(
-collection(db,"inspections")
-);
-
-let y = 50;
-
-snapshot.forEach(docu=>{
-
-const d =
-docu.data();
-
-pdf.text(
-`Depot : ${d.depotId || "-"}`,
-20,
-y
-);
-
-y += 8;
-
-pdf.text(
-`Skor : ${d.skorAkhir || 0}`,
-20,
-y
-);
-
-y += 8;
-
-pdf.text(
-`Status : ${d.status || "-"}`,
-20,
-y
-);
-
-y += 8;
-
-pdf.text(
-`Tanggal : ${d.tanggalPenilaian || "-"}`,
-20,
-y
-);
-
-y += 15;
-
-if(y > 260){
-
-pdf.addPage();
-
-y = 20;
-
-}
-
-});
-
-pdf.save(
-"Laporan-SIDAMIU.pdf"
-);
-
-};
-
 
 loadDashboard();
 loadDepotSelect();
