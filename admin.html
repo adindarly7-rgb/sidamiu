@@ -1134,12 +1134,13 @@ window.mapInstance.remove();
 
 }
 
-window.mapInstance = map;
 const map =
 L.map("map").setView(
 [-6.2088,106.8456],
 10
 );
+
+window.mapInstance = map;
 
 L.tileLayer(
 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -1685,20 +1686,12 @@ pdf.text(
 20
 );
 
-pdf.setFontSize(11);
+pdf.setFontSize(9);
 
 pdf.text(
 "Sistem Informasi Depot Air Minum Isi Ulang",
-50,
-28
-);
-
-pdf.setFontSize(11);
-
-pdf.text(
-"Sistem Informasi Depot Air Minum Isi Ulang",
-20,
-28
+40,
+25
 );
 
 pdf.line(
@@ -1736,13 +1729,13 @@ pdf.setFontSize(11);
 pdf.text(
 `Nama Depot : ${d.depotId || "-"}`,
 20,
-60
+85
 );
 
 pdf.text(
 `Tanggal : ${d.tanggalPenilaian || "-"}`,
 20,
-70
+95
 );
 
 if(
@@ -1770,7 +1763,7 @@ pdf.setTextColor(
 pdf.text(
 `Status : ${d.status || "-"}`,
 20,
-80
+105
 );
 
 pdf.setTextColor(
@@ -1782,13 +1775,13 @@ pdf.setTextColor(
 pdf.text(
 `Skor : ${d.skorAkhir || 0}`,
 20,
-90
+115
 );
 
 pdf.text(
 "Hasil Temuan :",
 20,
-110
+135
 );
 
 pdf.text(
@@ -1796,7 +1789,7 @@ String(
 d.hasilTemuan || "-"
 ),
 20,
-120,
+145,
 {
 maxWidth:160
 }
@@ -1805,7 +1798,7 @@ maxWidth:160
 pdf.text(
 "Hasil Laboratorium :",
 20,
-150
+190
 );
 
 pdf.text(
@@ -1813,7 +1806,7 @@ String(
 d.hasilLab || "-"
 ),
 20,
-160,
+200,
 {
 maxWidth:160
 }
@@ -1822,7 +1815,7 @@ maxWidth:160
 pdf.text(
 "Foto Temuan :",
 20,
-200
+240
 );
 
 pdf.text(
