@@ -1657,12 +1657,41 @@ return;
 const d =
 dok.data();
 
-pdf.setFontSize(18);
+const logo =
+new Image();
+
+logo.src =
+"logo-sidamiu.png";
+
+await new Promise(resolve=>{
+
+logo.onload = resolve;
+
+});
+
+pdf.addImage(
+logo,
+"PNG",
+15,
+10,
+25,
+25
+);
+
+pdf.setFontSize(20);
 
 pdf.text(
 "SIDAMIU",
-20,
+50,
 20
+);
+
+pdf.setFontSize(11);
+
+pdf.text(
+"Sistem Informasi Depot Air Minum Isi Ulang",
+50,
+28
 );
 
 pdf.setFontSize(11);
@@ -1682,10 +1711,25 @@ pdf.line(
 
 pdf.setFontSize(14);
 
+pdf.setFontSize(16);
+
 pdf.text(
-"LAPORAN HASIL INSPEKSI DEPOT",
+"LAPORAN HASIL INSPEKSI",
 20,
-45
+50
+);
+
+pdf.text(
+"DEPOT AIR MINUM ISI ULANG",
+20,
+58
+);
+
+pdf.line(
+20,
+65,
+190,
+65
 );
 
 pdf.setFontSize(11);
@@ -1702,10 +1746,38 @@ pdf.text(
 70
 );
 
+if(
+d.status ===
+"Memenuhi Syarat"
+){
+
+pdf.setTextColor(
+0,
+150,
+0
+);
+
+}
+else{
+
+pdf.setTextColor(
+255,
+0,
+0
+);
+
+}
+
 pdf.text(
 `Status : ${d.status || "-"}`,
 20,
 80
+);
+
+pdf.setTextColor(
+0,
+0,
+0
 );
 
 pdf.text(
@@ -1761,6 +1833,24 @@ d.fotoTemuan || "-",
 {
 maxWidth:160
 }
+);
+pdf.text(
+"Petugas Pemeriksa",
+140,
+240
+);
+
+pdf.line(
+130,
+270,
+190,
+270
+);
+
+pdf.text(
+"(________________)",
+135,
+278
 );
 
 pdf.save(
