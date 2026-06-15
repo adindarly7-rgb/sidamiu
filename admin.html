@@ -736,6 +736,18 @@ class="btn">
 
 <h2>📋 Histori Pemeriksaan</h2>
 
+<br>
+
+<button
+id="downloadPdf"
+class="btn">
+
+📄 Download PDF Histori
+
+</button>
+
+<br><br>
+
 <table>
 
 <thead>
@@ -746,6 +758,9 @@ class="btn">
 <th>Skor</th>
 <th>Status</th>
 <th>Tanggal</th>
+<th>Temuan</th>
+<th>Lab</th>
+<th>Foto</th>
 
 </tr>
 
@@ -1036,10 +1051,39 @@ const d = docu.data();
 
 tbody.innerHTML += `
 <tr>
+
 <td>${d.depotId || "-"}</td>
+
 <td>${d.skorAkhir || 0}</td>
+
 <td>${d.status || "-"}</td>
+
 <td>${d.tanggalPenilaian || "-"}</td>
+
+<td>${d.hasilTemuan || "-"}</td>
+
+<td>${d.hasilLab || "-"}</td>
+
+<td>
+
+${
+d.fotoTemuan
+?
+
+`<a href="${d.fotoTemuan}"
+target="_blank"
+style="color:#00cfff;">
+📷 Foto
+</a>`
+
+:
+
+"-"
+
+}
+
+</td>
+
 </tr>
 `;
 
@@ -1555,6 +1599,93 @@ document
 
 };
 
+document
+.getElementById("downloadPdf")
+.onclick = async()=>{
+
+const { jsPDF } =
+window.jspdf;
+
+const pdf =
+new jsPDF();
+
+pdf.setFontSize(16);
+
+pdf.text(
+"SIDAMIU",
+20,
+20
+);
+
+pdf.setFontSize(12);
+
+pdf.text(
+"Laporan Histori Pemeriksaan Depot",
+20,
+30
+);
+
+const snapshot =
+await getDocs(
+collection(db,"inspections")
+);
+
+let y = 50;
+
+snapshot.forEach(docu=>{
+
+const d =
+docu.data();
+
+pdf.text(
+`Depot : ${d.depotId || "-"}`,
+20,
+y
+);
+
+y += 8;
+
+pdf.text(
+`Skor : ${d.skorAkhir || 0}`,
+20,
+y
+);
+
+y += 8;
+
+pdf.text(
+`Status : ${d.status || "-"}`,
+20,
+y
+);
+
+y += 8;
+
+pdf.text(
+`Tanggal : ${d.tanggalPenilaian || "-"}`,
+20,
+y
+);
+
+y += 15;
+
+if(y > 260){
+
+pdf.addPage();
+
+y = 20;
+
+}
+
+});
+
+pdf.save(
+"Laporan-SIDAMIU.pdf"
+);
+
+};
+
+
 loadDashboard();
 loadDepotSelect();
 loadHistori();
@@ -1564,6 +1695,7 @@ loadMediaKIE();
 
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 </body>
