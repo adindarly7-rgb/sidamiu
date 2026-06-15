@@ -629,6 +629,7 @@ id="alamatDepot"
 placeholder="Alamat Depot">
 
 <button
+type="button"
 id="gpsBtn"
 class="btn">
 
@@ -637,14 +638,18 @@ class="btn">
 </button>
 
 <input
+type="number"
+step="any"
 id="latitudeDepot"
-placeholder="Latitude"
-readonly>
+placeholder="-6.200000">
+
+<label>Longitude</label>
 
 <input
+type="number"
+step="any"
 id="longitudeDepot"
-placeholder="Longitude"
-readonly>
+placeholder="106.816666">
 
 <button
 id="simpanDepot"
@@ -1226,6 +1231,16 @@ if(!nama){
 
 alert(
 "Nama depot wajib diisi"
+);
+
+return;
+
+}
+
+if(!latitude || !longitude){
+
+alert(
+"Latitude dan Longitude wajib diisi"
 );
 
 return;
