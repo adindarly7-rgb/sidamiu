@@ -732,6 +732,44 @@ class="btn">
 
 </div>
 
+<div class="card">
+
+<h2>
+📋 Hasil Pemeriksaan Terakhir
+</h2>
+
+<br>
+
+<p>
+<b>Temuan :</b>
+</p>
+
+<div id="temuanTerakhir">
+-
+</div>
+
+<br>
+
+<p>
+<b>Hasil Laboratorium :</b>
+</p>
+
+<div id="labTerakhir">
+-
+</div>
+
+<br>
+
+<p>
+<b>Foto Temuan :</b>
+</p>
+
+<div id="fotoTerakhir">
+-
+</div>
+
+</div>
+
 <!-- HISTORI -->
 
 <div id="histori" class="page">
@@ -959,7 +997,9 @@ total++;
 totalSkor +=
 Number(d.skor || 0);
 
-if(d.status === "Memenuhi Syarat"){
+if(
+d.status === "Memenuhi Syarat"
+){
 
 ms++;
 
@@ -1132,6 +1172,7 @@ window.mapInstance.remove();
 
 }
 
+window.mapInstance = map;
 const map =
 L.map("map").setView(
 [-6.2088,106.8456],
