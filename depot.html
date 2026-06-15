@@ -460,38 +460,6 @@ Sistem Informasi Depot Air Minum Isi Ulang
 
 </div>
 
-<div class="card">
-
-<h2>
-📋 Hasil Pemeriksaan Terakhir
-</h2>
-
-<br>
-
-<p>
-<b>Status :</b>
-<span id="statusTerakhir">-</span>
-</p>
-
-<br>
-
-<p>
-<b>Skor :</b>
-<span id="skorTerakhir">-</span>
-</p>
-
-<br>
-
-<p>
-<b>Hasil Temuan :</b>
-</p>
-
-<div id="temuanTerakhir">
-
--
-
-</div>
-
 <br>
 
 <p>
@@ -897,7 +865,11 @@ return;
 emailLogin = user.email;
 
 await loadProfil();
+
 await loadHistori();
+
+await loadHasilTerakhir();
+
 await loadMediaKIE();
 
 });
