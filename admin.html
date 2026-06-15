@@ -635,13 +635,25 @@ class="btn">
 
 📍 Ambil Lokasi GPS
 
-</button
+</button>
+
+<br><br>
+
+<label>Latitude</label>
 
 <input
 type="number"
 step="any"
 id="latitudeDepot"
 placeholder="-6.200000">
+
+<label>Longitude</label>
+
+<input
+type="number"
+step="any"
+id="longitudeDepot"
+placeholder="106.816666">
 
 <label>Longitude</label>
 
@@ -1438,14 +1450,6 @@ document.getElementById(
 "<div class='success'>✅ Hasil pemeriksaan berhasil disimpan</div>";
 
 
-window.cetakPdf = async(id)=>{
-
-alert(
-"PDF V3 akan kita pasang setelah tombol muncul"
-);
-
-};
-
 loadDashboard();
 loadHistori();
 
@@ -1622,6 +1626,14 @@ document
 document
 .querySelector(".sidebar")
 .classList.toggle("show");
+
+};
+
+window.cetakPdf = async(id)=>{
+
+alert(
+"PDF V3 akan kita pasang setelah tombol muncul"
+);
 
 };
 
