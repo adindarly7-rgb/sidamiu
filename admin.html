@@ -876,6 +876,10 @@ class="btn">
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script type="module">
 
 import { auth, db } from "./firebase-config.js";
@@ -955,14 +959,17 @@ total++;
 totalSkor +=
 Number(d.skor || 0);
 
-if(
-(d.status || "")
-.includes("Memenuhi")
-){
+if(d.status === "Memenuhi Syarat"){
+
 ms++;
+
 }
-else{
+else if(
+d.status === "Tidak Memenuhi Syarat"
+){
+
 tms++;
+
 }
 
 });
@@ -1118,6 +1125,12 @@ const snapshot =
 await getDocs(
 collection(db,"depots")
 );
+
+if(window.mapInstance){
+
+window.mapInstance.remove();
+
+}
 
 const map =
 L.map("map").setView(
@@ -1623,8 +1636,132 @@ document
 
 window.cetakPdf = async(id)=>{
 
-alert(
-"PDF V3 akan kita pasang setelah tombol muncul"
+const pdf =
+new jspdf.jsPDF();
+
+const dok =
+await getDoc(
+doc(db,"inspections",id)
+);
+
+if(!dok.exists()){
+
+alert("Data tidak ditemukan");
+return;
+
+}
+
+const d =
+dok.data();
+
+pdf.setFontSize(18);
+
+pdf.text(
+"SIDAMIU",
+20,
+20
+);
+
+pdf.setFontSize(11);
+
+pdf.text(
+"Sistem Informasi Depot Air Minum Isi Ulang",
+20,
+28
+);
+
+pdf.line(
+20,
+32,
+190,
+32
+);
+
+pdf.setFontSize(14);
+
+pdf.text(
+"LAPORAN HASIL INSPEKSI DEPOT",
+20,
+45
+);
+
+pdf.setFontSize(11);
+
+pdf.text(
+`Nama Depot : ${d.depotId || "-"}`,
+20,
+60
+);
+
+pdf.text(
+`Tanggal : ${d.tanggalPenilaian || "-"}`,
+20,
+70
+);
+
+pdf.text(
+`Status : ${d.status || "-"}`,
+20,
+80
+);
+
+pdf.text(
+`Skor : ${d.skorAkhir || 0}`,
+20,
+90
+);
+
+pdf.text(
+"Hasil Temuan :",
+20,
+110
+);
+
+pdf.text(
+String(
+d.hasilTemuan || "-"
+),
+20,
+120,
+{
+maxWidth:160
+}
+);
+
+pdf.text(
+"Hasil Laboratorium :",
+20,
+150
+);
+
+pdf.text(
+String(
+d.hasilLab || "-"
+),
+20,
+160,
+{
+maxWidth:160
+}
+);
+
+pdf.text(
+"Foto Temuan :",
+20,
+200
+);
+
+pdf.text(
+d.fotoTemuan || "-",
+20,
+210,
+{
+maxWidth:160
+}
+);
+
+pdf.save(
+`Laporan-${d.depotId}.pdf`
 );
 
 };
@@ -1638,8 +1775,7 @@ loadMediaKIE();
 
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 
 </body>
 </html>
