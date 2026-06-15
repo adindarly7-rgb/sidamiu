@@ -460,6 +460,56 @@ Sistem Informasi Depot Air Minum Isi Ulang
 
 </div>
 
+<div class="card">
+
+<h2>
+📋 Hasil Pemeriksaan Terakhir
+</h2>
+
+<br>
+
+<p>
+<b>Status :</b>
+<span id="statusTerakhir">-</span>
+</p>
+
+<br>
+
+<p>
+<b>Skor :</b>
+<span id="skorTerakhir">-</span>
+</p>
+
+<br>
+
+<p>
+<b>Hasil Temuan :</b>
+</p>
+
+<div id="temuanTerakhir">
+
+-
+
+</div>
+
+<br>
+
+<p>
+<b>Hasil Laboratorium :</b>
+</p>
+
+<div id="labTerakhir">
+
+-
+
+</div>
+
+<br>
+
+<div id="fotoTerakhir"></div>
+
+</div>
+
 <!-- HISTORI -->
 
 <div id="histori" class="page">
@@ -536,6 +586,8 @@ window.location.href =
 }
 
 let emailLogin = "";
+
+let depotSaya = null;
 
 async function loadProfil(){
 
@@ -645,7 +697,7 @@ await getDocs(
 collection(db,"depots")
 );
 
-let depotSaya = null;
+depotSaya = null;
 
 depotSnapshot.forEach(docu=>{
 
@@ -697,6 +749,73 @@ ${d.status === "Memenuhi Syarat"
 }
 
 });
+
+}
+
+async function loadHasilTerakhir(){
+
+if(!depotSaya) return;
+
+const snapshot =
+await getDocs(
+collection(db,"inspections")
+);
+
+let hasil = null;
+
+snapshot.forEach(docu=>{
+
+const d = docu.data();
+
+if(d.depotId === depotSaya){
+
+hasil = d;
+
+}
+
+});
+
+if(!hasil) return;
+
+document.getElementById(
+"statusTerakhir"
+).innerHTML =
+hasil.status || "-";
+
+document.getElementById(
+"skorTerakhir"
+).innerHTML =
+hasil.skorAkhir || 0;
+
+document.getElementById(
+"temuanTerakhir"
+).innerHTML =
+hasil.hasilTemuan || "-";
+
+document.getElementById(
+"labTerakhir"
+).innerHTML =
+hasil.hasilLab || "-";
+
+if(hasil.fotoTemuan){
+
+document.getElementById(
+"fotoTerakhir"
+).innerHTML =
+
+`<a
+href="${hasil.fotoTemuan}"
+target="_blank"
+style="
+color:#00cfff;
+font-weight:bold;
+">
+
+📷 Lihat Dokumentasi
+
+</a>`;
+
+}
 
 }
 
